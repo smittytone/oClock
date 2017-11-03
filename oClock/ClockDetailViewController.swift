@@ -106,22 +106,30 @@ class ClockDetailViewController:
 
     @IBAction func resetClock(sender:AnyObject) {
 
-        connectionProgress.isHidden = false
-        connectionProgress.startAnimating()
-
-        let url:URL? = URL(string: imp_url_string + currentClock.code + imp_command_reset_clock)
+        let url:URL? = URL(string: imp_url_string + currentClock.code + "/action")
 
         if url == nil {
             reportError("ClockDetailViewController.resetClock() generated a malformed URL string")
             errorLabel.text = "Error contacting the Cløck server"
-            connectionProgress.isHidden = true
-            connectionProgress.stopAnimating()
             return
         }
 
-        let request:URLRequest = URLRequest(url:url!,
+        connectionProgress.isHidden = false
+        connectionProgress.startAnimating()
+        var dict = [String: String]()
+        dict["action"] = "reset"
+
+        var request:URLRequest = URLRequest(url:url!,
                                             cachePolicy:URLRequest.CachePolicy.reloadIgnoringLocalCacheData,
                                             timeoutInterval:60.0)
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: dict, options: [])
+            request.httpMethod = "POST"
+        } catch {
+            reportError("ClockDetailViewController.resetClock() passed malformed data")
+            return
+        }
 
         if timeSession == nil {
             timeSession = URLSession(configuration:URLSessionConfiguration.default,

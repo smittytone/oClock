@@ -73,9 +73,10 @@ class TimeViewController:
 
                 // Check if the current clock is still being shown; if not, reload data
                 // If it is, there's no need to reload data and put extra strain on phone battery
-                if currentImp != myClocks.currentImp || clockResetFlag == false {
+                if currentImp != myClocks.currentImp || clockResetFlag == true {
                     currentImp = myClocks!.currentImp
                     initialQueryFlag = true
+                    clockResetFlag = false
                     getMode()
                 }
 
@@ -112,12 +113,13 @@ class TimeViewController:
             return
         }
 
-        let mode:String = clockModeSwitch.isOn ? "24" : "12"
-        clockModeLabel.text = clockModeSwitch.isOn ? "24HR" : "AM/PM"
-
         // Get the current imp's details and send the command to the clock
-        let clock:Imp = myClocks!.imps[myClocks!.currentImp]
-        makeConnection(imp_url_string + clock.code + imp_command_set_mode + mode)
+        let clock:Imp = myClocks.imps[myClocks.currentImp]
+        let url:String = imp_url_string + clock.code + "/settings"
+        var dict = [String: String]()
+        dict["setmode"] = clockModeSwitch.isOn ? "1" : "0"
+        clockModeLabel.text = clockModeSwitch.isOn ? "24HR" : "AM/PM"
+        makeConnection(url, dict)
     }
 
     @IBAction func worldTimeSwitcher(sender:AnyObject) {
@@ -130,15 +132,21 @@ class TimeViewController:
             return
         }
 
-        let mode:String = worldTimeSwitch.isOn ? imp_command_set_utc_on : imp_command_set_utc_off
-
         // Get the current imp's details and send the command to the clock
-        utcOffset = worldTimePicker.selectedRow(inComponent:0)
-        var utc:String = "\(utcOffset)"
-        if utcOffset < 10 { utc = "0" + utc }
+        let clock:Imp = myClocks.imps[myClocks.currentImp]
+        let url:String = imp_url_string + clock.code + "/settings"
+        var dict = [String: String]()
+        dict["setutc"] = worldTimeSwitch.isOn ? "1" : "0"
 
-        let clock:Imp = myClocks!.imps[myClocks!.currentImp]
-        makeConnection(imp_url_string + clock.code + mode + utc)
+        utcOffset = worldTimePicker.selectedRow(inComponent:0)
+
+        // Offset value is expected to be 0 to 24, with offset calculated by subtracting
+        // 12 from this value to yield -12 to +12. Here row value is 0 to 23, +12 to -12
+        let offset = 24 - utcOffset
+        let utc:String = offset < 10 ? "0\(offset)" : "\(offset)"
+        dict["utcval"] = utc
+
+        makeConnection(url, dict)
     }
 
     @IBAction func summerTimeSwitcher(sender:AnyObject) {
@@ -151,11 +159,12 @@ class TimeViewController:
             return
         }
 
-        let mode:String = summerTimeSwitch.isOn ? imp_command_set_bst_on : imp_command_set_bst_off
-
         // Get the current imp's details and send the command to the clock
-        let clock:Imp = myClocks!.imps[myClocks!.currentImp]
-        makeConnection(imp_url_string + clock.code + mode)
+        let clock:Imp = myClocks.imps[myClocks.currentImp]
+        let url:String = imp_url_string + clock.code + "/settings"
+        var dict = [String: String]()
+        dict["setbst"] = summerTimeSwitch.isOn ? "1" : "0"
+        makeConnection(url, dict)
     }
 
     func getMode() {
@@ -163,13 +172,13 @@ class TimeViewController:
         // If no imp has been selected, bail
         if myClocks == nil { return }
 
-        if myClocks!.currentImp == -1 {
+        if myClocks.currentImp == -1 {
             clockNameLabel.text = "No cløck selected"
             return
         }
 
-        let clock:Imp = myClocks!.imps[myClocks!.currentImp]
-        makeConnection(imp_url_string + clock.code + imp_command_get_mode)
+        let clock:Imp = myClocks.imps[myClocks.currentImp]
+        makeConnection(imp_url_string + clock.code + "/settings", nil)
     }
 
     func resetControls() {
@@ -203,8 +212,6 @@ class TimeViewController:
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 
-        utcOffset = row;
-
         if worldTimeSwitch.isOn {
             // If no imp has been selected, bail
             if myClocks == nil { return }
@@ -215,16 +222,23 @@ class TimeViewController:
             }
 
             // Get the current imp's details and send the command to the clock
-            let clock:Imp = myClocks!.imps[myClocks!.currentImp]
-            let mode:String = utcOffset < 10 ? "0\(utcOffset)" : "\(utcOffset)"
-            makeConnection(imp_url_string + clock.code + imp_command_set_utc_on + mode)
+            let clock:Imp = myClocks.imps[myClocks.currentImp]
+            let url:String = imp_url_string + clock.code + "/settings"
+            var dict = [String: String]()
+
+            // Offset value is expected to be 0 to 24, with offset calculated by subtracting
+            // 12 from this value to yield -12 to +12. Here row value is 0 to 23, +12 to -12
+            let offset = 24 - row
+            let utc:String = offset < 10 ? "0\(offset)" : "\(offset)"
+            dict["utcval"] = utc
+            makeConnection(url, dict)
         }
     }
 
 
     // MARK: - Connection Methods
 
-    func makeConnection(_ urlpath:String = "") {
+    func makeConnection(_ urlpath:String = "", _ data:[String:String]?) {
 
         if urlpath.isEmpty {
             reportError("TimeViewController.makeConnection() passed empty URL string")
@@ -244,9 +258,19 @@ class TimeViewController:
                                                delegateQueue:OperationQueue.main)
         }
 
-        let request = URLRequest(url: url!,
+        var request = URLRequest(url: url!,
                                  cachePolicy:URLRequest.CachePolicy.reloadIgnoringLocalCacheData,
                                  timeoutInterval: 60.0)
+
+        if (data != nil) {
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: data!, options: [])
+                request.httpMethod = "POST"
+            } catch {
+                reportError("TimeViewController.makeConnection() passed malformed data")
+                return
+            }
+        }
 
         let aConnexion = Connexion()
         aConnexion.errorCode = -1;
@@ -364,14 +388,23 @@ class TimeViewController:
                             initialQueryFlag = false
 
                             // Incoming string looks like this:
-                            // 1.1.1.1.01.1.01.1.d
-                            // for the values mode, bst, colon flash, colon show, brightness, utc, utc offset, display state
+                            //    1.1.1.1.01.1.01.1.d.1
+                            // with the values
+                            //    0. mode (1: 24hr, 0: 12hr)
+                            //    1. bst state
+                            //    2. colon flash
+                            //    3. colon state
+                            //    4. brightness
+                            //    5. world time state
+                            //    6. world time offset (0-24 -> -12 to 12)
+                            //    7. display state
+                            //    8. connection status
+                            //    9. debug status
 
-                            let dataArray = inString.components(separatedBy:".")
                             let modeString = dataArray[0] as String
                             let summerString = dataArray[1] as String
-                            let utcString = dataArray[5] as String
-                            let worldString = dataArray[6] as String
+                            let worldString = dataArray[5] as String
+                            let offsetString = dataArray[6] as String
 
                             // Set the clock mode
                             if let value = Int(modeString) {
@@ -390,11 +423,11 @@ class TimeViewController:
                             }
 
                             // Set world time offset
-                            if let value = Int(utcString) {
+                            if let value = Int(worldString) {
                                 worldTimeSwitch.setOn((value == 1 ? true : false), animated:false)
                             }
                             
-                            if let utcOffset = Int(worldString) {
+                            if let utcOffset = Int(offsetString) {
                                 worldTimePicker.selectRow(utcOffset, inComponent:0, animated:false)
                             }
                         }

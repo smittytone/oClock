@@ -9,26 +9,6 @@ import Foundation
 
 let imp_url_string = "https://agent.electricimp.com/"
 
-let imp_command_get_mode = "?getmode"
-let imp_command_set_mode = "?setmode="
-
-let imp_command_set_bst_on = "?setbst=1"
-let imp_command_set_bst_off = "?setbst=0"
-
-let imp_command_set_utc_on = "?setutc=1."
-let imp_command_set_utc_off = "?setutc=0."
-
-let imp_command_set_bright = "?setbright="
-
-let imp_command_set_flash_on = "?setflash=1"
-let imp_command_set_flash_off = "?setflash=0"
-
-let imp_command_set_colon_on = "?setcolon=1"
-let imp_command_set_colon_off = "?setcolon=0"
-
-let imp_command_set_display_on = "?setlight=1"
-let imp_command_set_display_off = "?setlight=0"
-
 let imp_command_reset_clock = "?reset"
 
 let imp_command_set_alarm = "?setalarm="

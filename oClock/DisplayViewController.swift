@@ -10,17 +10,22 @@ class DisplayViewController:
     URLSessionDelegate,
     URLSessionDataDelegate {
 
-    @IBOutlet weak var clockNameLabel:UILabel!
-    @IBOutlet weak var statusLabel:UILabel!
-    @IBOutlet weak var connectionProgress:UIActivityIndicatorView!
+    @IBOutlet weak var brightnessSlider:UISlider!
+    @IBOutlet weak var ledColourView:UIImageView!
     @IBOutlet weak var flashColonSwitch:UISwitch!
     @IBOutlet weak var flashColonLabel:UILabel!
     @IBOutlet weak var setColonLabel:UILabel!
     @IBOutlet weak var setColonSwitch:UISwitch!
     @IBOutlet weak var onSwitch:UISwitch!
     @IBOutlet weak var onLabel:UILabel!
-    @IBOutlet weak var brightnessSlider:UISlider!
-    @IBOutlet weak var ledColourView:UIImageView!
+    @IBOutlet weak var debugSwitch:UISwitch!
+    @IBOutlet weak var debugLabel:UILabel!
+
+    @IBOutlet weak var connectionProgress:UIActivityIndicatorView!
+    @IBOutlet weak var clockNameLabel:UILabel!
+    @IBOutlet weak var statusLabel:UILabel!
+
+
 
     var connexions:[Connexion] = []
     var myClocks:ImpList!
@@ -93,6 +98,7 @@ class DisplayViewController:
                 if currentImpIndex != myClocks.currentImp || clockResetFlag == true {
                     currentImpIndex = myClocks.currentImp
                     initialQueryFlag = true
+                    clockResetFlag = false
                     getMode()
                 }
 
@@ -105,9 +111,8 @@ class DisplayViewController:
         }
     }
 
+    func resetControls() {
 
-    func resetControls()
-    {
         clockNameLabel.text = "No Cløck selected"
         statusLabel.text = ""
         brightnessSlider.value = 15.0
@@ -138,22 +143,22 @@ class DisplayViewController:
         // If no imp has been selected, bail
         if myClocks == nil || myClocks.currentImp == -1 { return }
 
-        var mode:String = ""
+        // Get the current imp's details and send the command to the clock
+        let clock:Imp = myClocks.imps[myClocks.currentImp]
+        let url:String = imp_url_string + clock.code + "/settings"
+        var dict = [String: String]()
 
         if (setColonSwitch.isOn) {
-            mode = imp_command_set_colon_on
+            dict["setcolon"] = "1"
             flashColonSwitch.isEnabled = true
             flashColonLabel.isEnabled = true
         }  else {
-            mode = imp_command_set_colon_off
+            dict["setcolon"] = "1"
             flashColonSwitch.isEnabled = false
             flashColonLabel.isEnabled = false
         }
 
-        // Get the current imp's details and send the command to the clock
-
-        let clock:Imp = myClocks.imps[myClocks.currentImp]
-        makeConnection(imp_url_string + clock.code + mode)
+        makeConnection(url, dict)
     }
 
     @IBAction func flashColon(sender:AnyObject) {
@@ -161,11 +166,12 @@ class DisplayViewController:
         // If no imp has been selected, bail
         if myClocks == nil || myClocks.currentImp == -1 { return }
 
-        let mode:String = flashColonSwitch.isOn ? imp_command_set_flash_on : imp_command_set_flash_off
-
         // Get the current imp's details and send the command to the clock
         let clock:Imp = myClocks.imps[myClocks.currentImp]
-        makeConnection(imp_url_string + clock.code + mode)
+        let url:String = imp_url_string + clock.code + "/settings"
+        var dict = [String: String]()
+        dict["setflash"] = flashColonSwitch.isOn ? "1" : "0"
+        makeConnection(url, dict)
     }
 
     @IBAction func setDisplay(sender:AnyObject) {
@@ -174,17 +180,18 @@ class DisplayViewController:
         if myClocks == nil || myClocks.currentImp == -1 { return }
 
         let clock:Imp = myClocks.imps[myClocks.currentImp]
-        var url:String = imp_url_string + clock.code
+        let url:String = imp_url_string + clock.code + "/settings"
+        var dict = [String: String]()
 
         if onSwitch.isOn {
-            url = url + imp_command_set_display_on
+            dict["setlight"] = "1"
             onLabel.text = "Turn Cløck display off"
         } else {
-            url = url + imp_command_set_display_off
+            dict["setlight"] = "0"
             onLabel.text = "Turn Cløck display on"
         }
 
-        makeConnection(url)
+        makeConnection(url, dict)
     }
 
     @IBAction func doBrightnessSlider(sender:AnyObject) {
@@ -203,8 +210,31 @@ class DisplayViewController:
         ledColourView.alpha = alpha
 
         let clock:Imp = myClocks.imps[myClocks.currentImp]
-        let url:String = imp_url_string + clock.code + imp_command_set_bright + "\(newBrightness)"
-        makeConnection(url)
+        let url:String = imp_url_string + clock.code + "/settings"
+        var dict = [String: String]()
+        dict["setbright"] = "\(newBrightness)"
+        makeConnection(url, dict)
+    }
+
+    @IBAction func setDebug(_ sender:Any) {
+
+        // If no imp has been selected, bail
+        if myClocks == nil || myClocks.currentImp == -1 { return }
+
+        let clock:Imp = myClocks.imps[myClocks.currentImp]
+        let url:String = imp_url_string + clock.code + "/action"
+        var dict = [String: String]()
+        dict["action"] = "debug"
+
+        if debugSwitch.isOn {
+            dict["debug"] = "1"
+            debugLabel.text = "Debug mode off"
+        } else {
+            dict["debug"] = "0"
+            debugLabel.text = "Debug mode on"
+        }
+
+        makeConnection(url, dict)
     }
 
     func getMode() {
@@ -213,13 +243,13 @@ class DisplayViewController:
         if myClocks == nil || myClocks.currentImp == -1 { return }
 
         let clock:Imp = myClocks.imps[myClocks.currentImp]
-        makeConnection(imp_url_string + clock.code + imp_command_get_mode)
+        makeConnection(imp_url_string + clock.code + "/settings", nil)
     }
 
 
     // MARK: - Connection Methods
 
-    func makeConnection(_ urlPath:String = "") {
+    func makeConnection(_ urlPath:String = "", _ data:[String:String]?) {
 
         if urlPath.isEmpty {
             reportError("DisplayViewController.makeConnection() passed empty URL string")
@@ -239,9 +269,19 @@ class DisplayViewController:
                                      delegateQueue:OperationQueue.main)
         }
 
-        let request = URLRequest.init(url: url!,
+        var request = URLRequest.init(url: url!,
                                       cachePolicy:URLRequest.CachePolicy.reloadIgnoringLocalCacheData,
                                       timeoutInterval: 60.0)
+
+        if (data != nil) {
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: data!, options: [])
+                request.httpMethod = "POST"
+            } catch {
+                reportError("DisplayViewController.makeConnection() passed malformed data")
+                return
+            }
+        }
 
         let aConnexion = Connexion()
         aConnexion.errorCode = -1;
@@ -354,13 +394,24 @@ class DisplayViewController:
                             initialQueryFlag = false
 
                             // Incoming string looks like this:
-                            // 1.1.1.1.01.1.01.1.d
-                            // for the values mode, bst, colon flash, colon show, brightness, utc, utc offset, display state
+                            //    1.1.1.1.01.1.01.1.d.1
+                            // with the values
+                            //    0. mode (1: 24hr, 0: 12hr)
+                            //    1. bst state
+                            //    2. colon flash
+                            //    3. colon state
+                            //    4. brightness
+                            //    5. world time state
+                            //    6. world time offset (0-24 -> -12 to 12)
+                            //    7. display state
+                            //    8. connection status
+                            //    9. debug status
 
                             let flashString = dataArray[2] as String
                             let colonString = dataArray[3] as String
                             let brightString = dataArray[4] as String
                             let onString = dataArray[7] as String
+                            let debugString = dataArray[9] as String
 
                             // Set the colon value
 
@@ -393,6 +444,12 @@ class DisplayViewController:
                             // Set on or off
                             if let value = Int(onString) {
                                 onSwitch.setOn((value == 1 ? true : false), animated:false)
+                            }
+
+                            // Set debug mode
+                            if let value = Int(debugString) {
+                                debugSwitch.setOn((value == 1 ? true : false), animated:false)
+                                debugLabel.text = "Debug mode " + (value == 1 ? "off" : "on")
                             }
                         }
                     }
