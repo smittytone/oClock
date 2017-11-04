@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Load in default imp list if the file has already been saved
         let docsDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
-        let docsPath = docsDir[0] + "oclocks"
+        let docsPath = docsDir[0] + "/oclocks"
 
         if FileManager.default.fileExists(atPath: docsPath) {
             // If imps file is present on the iDevice, load it in
@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let imps = clocks.imps as Array
                 myClocks.imps.append(contentsOf:imps)
                 myClocks.currentImp = clocks.currentImp
-                NSLog("Imp list loaded");
+                NSLog("Imp list loaded (%@)", docsPath);
             }
         }
 
@@ -57,9 +57,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // The app is going into the background or closing, so save the list of imps
         let docsDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
-        let docsPath = docsDir[0] + "oclocks"
+        let docsPath = docsDir[0] + "/oclocks"
         let success = NSKeyedArchiver.archiveRootObject(myClocks, toFile:docsPath)
-        NSLog(!success ? "Imp list save failed" : "Imp list saved")
+        if success {
+            NSLog("Imp list saved (%@)", docsPath)
+        } else {
+            NSLog("Imp list save failed")
+        }
     }
 
 }
