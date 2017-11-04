@@ -21,9 +21,6 @@ class AlarmsTableViewController: UITableViewController {
 
         super.viewDidLoad()
 
-        // Get the list of imps
-        myClocks = ImpList.sharedImps
-
         // Set up the table's selection persistence
         self.clearsSelectionOnViewWillAppear = false
 
@@ -45,6 +42,9 @@ class AlarmsTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
 
         super.viewWillAppear(animated)
+
+        // Get list of imps
+        myClocks = ImpList.sharedImps
 
         if myClocks == nil {
             if myClocks.currentImp != -1 {

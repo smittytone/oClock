@@ -39,8 +39,6 @@ class TimeViewController:
 
         super.viewDidLoad()
 
-        myClocks = ImpList.sharedImps
-
         // Initialize key arrays
         connexions = []
         utcOffsets = [ "+12", "+11", "+10", "+9", "+8", "+7",
@@ -64,6 +62,9 @@ class TimeViewController:
 
         super.viewWillAppear(animated)
         connectionProgress.isHidden = true
+
+        // Get list of imps
+        myClocks = ImpList.sharedImps
 
         if myClocks != nil {
             if myClocks!.currentImp != -1 {
@@ -248,7 +249,7 @@ class TimeViewController:
         let url:URL? = URL(string: urlpath)
 
         if url == nil {
-            reportError("TimeViewController.makeConnection() passed malformed URL string")
+            reportError("TimeViewController.makeConnection() passed malformed URL string + \(urlpath)")
             return
         }
 

@@ -25,9 +25,6 @@ class ClocksTableViewController: UITableViewController {
 
         super.viewDidLoad()
 
-        // Get the list of imps
-        myClocks = ImpList.sharedImps
-
         // Set up the table's selection persistence
         self.clearsSelectionOnViewWillAppear = false
 
@@ -60,6 +57,9 @@ class ClocksTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
 
         super.viewWillAppear(animated)
+
+        // Get list of imps
+        myClocks = ImpList.sharedImps
 
         if editingClock != nil {
             // editingImp is only non-nil if we have edited a imp's details

@@ -44,16 +44,12 @@ class DisplayViewController:
 
         super.viewDidLoad()
 
-        // Get list of imps
-        myClocks = ImpList.sharedImps
-
         // Initialise object properties
         currentImpIndex = -1
         connexions = []
 
         // Initialise UI
         ledColourView.alpha = 1.0
-        onLabel.text = "Turn display off";
         connectionProgress.isHidden = true;
 
         // Set up notifications
@@ -71,6 +67,9 @@ class DisplayViewController:
     override func viewWillAppear(_ animated: Bool) {
 
         super.viewWillAppear(animated)
+
+        // Get list of imps
+        myClocks = ImpList.sharedImps
 
         if myClocks != nil {
             if myClocks.currentImp != -1 {
@@ -116,9 +115,13 @@ class DisplayViewController:
         clockNameLabel.text = "No Cløck selected"
         statusLabel.text = ""
         brightnessSlider.value = 15.0
-        setColonSwitch.isOn = false
-        flashColonSwitch.isOn = false
-        onSwitch.isOn = false
+        setColonSwitch.isOn = true
+        flashColonSwitch.isOn = true
+        onSwitch.isOn = true
+        onLabel.text = "Turn display off"
+        debugSwitch.isOn = false
+        debugLabel.text = "Debug mode on"
+        ledColourView.alpha = 1.0
     }
 
 
@@ -259,7 +262,7 @@ class DisplayViewController:
         let url:URL? = URL(string: urlPath)
 
         if url == nil {
-            reportError("DisplayViewController.makeConnection() passed malformed URL string")
+            reportError("DisplayViewController.makeConnection() passed malformed URL string + \(urlPath)")
             return
         }
         
