@@ -7,7 +7,7 @@ import Foundation
 
 class ImpList: NSObject, NSCoding {
 
-    static let sharedImps: ImpList = { return ImpList() }()
+    static let sharedImps: ImpList = ImpList()
 
     var imps: [Imp] = []
     var currentImp: Int = -1
