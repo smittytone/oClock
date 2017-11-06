@@ -56,6 +56,9 @@ class TimeViewController:
                        name: NSNotification.Name(rawValue: "com.bps.clock.will.quit"),
                        object: nil)
 
+        // Set the unselected icon color
+        self.tabBarController?.tabBar.unselectedItemTintColor = UIColor.init(white: 0.8, alpha: 1.0);
+
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -26,7 +26,6 @@ class DisplayViewController:
     @IBOutlet weak var statusLabel:UILabel!
 
 
-
     var connexions:[Connexion] = []
     var myClocks:ImpList!
 
@@ -103,11 +102,11 @@ class DisplayViewController:
 
                 return
             }
-            else
-            {
-                resetControls()
-            }
         }
+
+        ledColourView.image = UIImage.init(named:"led_red.png")
+        resetControls()
+
     }
 
     func resetControls() {

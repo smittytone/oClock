@@ -55,14 +55,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func saveImps() {
 
-        // The app is going into the background or closing, so save the list of imps
-        let docsDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
-        let docsPath = docsDir[0] + "/oclocks"
-        let success = NSKeyedArchiver.archiveRootObject(myClocks, toFile:docsPath)
-        if success {
-            NSLog("Imp list saved (%@)", docsPath)
+        if myClocks.imps.count > 0 {
+            // The app is going into the background or closing, so save the list of imps
+            let docsDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+            let docsPath = docsDir[0] + "/oclocks"
+            let success = NSKeyedArchiver.archiveRootObject(myClocks, toFile:docsPath)
+            if success {
+                NSLog("Imp list saved (%@)", docsPath)
+            } else {
+                NSLog("Imp list save failed")
+            }
         } else {
-            NSLog("Imp list save failed")
+            NSLog("No Imps to save")
         }
     }
 

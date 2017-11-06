@@ -18,7 +18,7 @@
                         <viewControllerLayoutGuide type="bottom" id="4ug-Mw-9AY"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
-                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1063"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Px-Fi-k1N">
@@ -201,7 +201,7 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Time" image="cog" id="acW-dT-cKf">
-                        <color key="badgeColor" red="0.30588235289999999" green="0.39607843139999999" blue="0.68235294120000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="badgeColor" red="0.35294117650000001" green="0.58039215690000001" blue="0.80784313730000001" alpha="1" colorSpace="calibratedRGB"/>
                     </tabBarItem>
                     <connections>
                         <outlet property="clockModeLabel" destination="3xf-Nw-W1B" id="JzS-jf-Hpc"/>
@@ -227,7 +227,7 @@
                         <viewControllerLayoutGuide type="bottom" id="Djb-ko-YwX"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
-                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1063"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aIu-L9-eVn">
@@ -409,7 +409,7 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Display" image="display" id="cPa-gy-q4n">
-                        <color key="badgeColor" red="0.30588235289999999" green="0.39607843139999999" blue="0.68235294120000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="badgeColor" red="0.35294117650000001" green="0.58039215690000001" blue="0.80784313730000001" alpha="1" colorSpace="calibratedRGB"/>
                     </tabBarItem>
                     <connections>
                         <outlet property="brightnessSlider" destination="lW8-sl-FSv" id="zeF-co-O70"/>
@@ -437,11 +437,11 @@
                 <tabBarController id="49e-Tb-3d3" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="GSD-KZ-tkP"/>
                     <nil key="simulatedBottomBarMetrics"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="W28-zg-YXA">
+                    <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="W28-zg-YXA">
                         <rect key="frame" x="0.0" y="975" width="768" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <color key="tintColor" red="0.50196081400000003" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                        <color key="barTintColor" red="0.66268062589999999" green="0.66279166940000001" blue="0.66265696289999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="barTintColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="selectedImageTintColor" red="0.35294117650000001" green="0.58039215690000001" blue="0.80784313730000001" alpha="1" colorSpace="calibratedRGB"/>
                     </tabBar>
                     <connections>
                         <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="u7Y-xg-7CH"/>
@@ -464,7 +464,7 @@
                         <viewControllerLayoutGuide type="bottom" id="JU8-K6-Mcd"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="buI-Bm-EgH">
-                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1063"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="224" translatesAutoresizingMaskIntoConstraints="NO" id="p7b-6V-5dj">
@@ -553,7 +553,12 @@ All rights reserved.</string>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="About" image="info" id="EfM-Ny-zLU">
-                        <color key="badgeColor" red="0.30588235289999999" green="0.39607843139999999" blue="0.68235294120000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="badgeColor" red="0.35294117650000001" green="0.58039215690000001" blue="0.80784313730000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="unselectedItemTintColor">
+                                <color key="value" red="0.83741801979999997" green="0.83743780850000005" blue="0.83742713930000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </tabBarItem>
                     <connections>
                         <outlet property="buildNumber" destination="uEH-xf-YtF" id="Q0m-r1-0hR"/>
@@ -567,7 +572,9 @@ All rights reserved.</string>
         <scene sceneID="ZBa-36-pwk">
             <objects>
                 <navigationController id="sj5-eC-5LG" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Alarms" image="alarm" id="HZj-34-8JG"/>
+                    <tabBarItem key="tabBarItem" title="Alarms" image="alarm" id="HZj-34-8JG">
+                        <color key="badgeColor" red="0.35294117650000001" green="0.58039215690000001" blue="0.80784313730000001" alpha="1" colorSpace="calibratedRGB"/>
+                    </tabBarItem>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="nI4-cF-wTr">
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.35294117650000001" green="0.58039215690000001" blue="0.80784313730000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -585,7 +592,7 @@ All rights reserved.</string>
             <objects>
                 <tableViewController id="XND-qb-ttu" customClass="AlarmsTableViewController" customModule="oClock" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="64" sectionHeaderHeight="28" sectionFooterHeight="28" id="mSh-5M-g3w">
-                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1063"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -717,7 +724,7 @@ All rights reserved.</string>
             <objects>
                 <navigationController title="Cløcks" id="ef8-1Z-yQq" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Cløcks" image="clock" id="wai-gf-ZkY">
-                        <color key="badgeColor" red="0.30588235289999999" green="0.39607843139999999" blue="0.68235294120000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="badgeColor" red="0.35294117650000001" green="0.58039215690000001" blue="0.80784313730000001" alpha="1" colorSpace="calibratedRGB"/>
                     </tabBarItem>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="g5E-fg-heh">
                         <autoresizingMask key="autoresizingMask"/>
@@ -736,7 +743,7 @@ All rights reserved.</string>
             <objects>
                 <tableViewController id="XEN-8d-Q73" customClass="ClocksTableViewController" customModule="oClock" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="1BA-od-vG9">
-                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1063"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
