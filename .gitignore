@@ -35,3 +35,4 @@ timeline.xctimeline
 playground.xcworkspace
 
 .build/
+*.xcuserstate
