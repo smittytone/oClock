@@ -51,3 +51,4 @@ xcuserdata/
 Podfile.lock
 
 Pods/Manifest.lock
+*.xcuserstate
