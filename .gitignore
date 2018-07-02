@@ -1,22 +1,10 @@
 ## My Files
 
-Experimental/*
-Art/*
-Art-Source/*
-#SquinterHelp/*
-Third-Party-Code/*
-SquinterTests/*
-Squinter/*.pem
-Squinter/Images.xcassets/*
-Squinter/*.icns
 *.txt
 *.pages
 
-#Podfile.lock
-#Podfile
-#Pods/*
-Squinter.xcodeproj/*
-Squinter.xcworkspace/*
+oClock.xcodeproj/*
+oClock.xcworkspace/*
 
 ## From GitHub
 ## Build generated
@@ -47,8 +35,3 @@ xcuserdata/
 *.nut
 
 *.lock
-
-Podfile.lock
-
-Pods/Manifest.lock
-*.xcuserstate
