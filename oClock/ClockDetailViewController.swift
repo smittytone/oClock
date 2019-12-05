@@ -48,7 +48,7 @@ class ClockDetailViewController:
         let nc = NotificationCenter.default
         nc.addObserver(self,
                        selector:#selector(self.updateInterfaceElements),
-                       name:NSNotification.Name.UIApplicationWillEnterForeground,
+                       name:UIApplication.willEnterForegroundNotification,
                        object:nil)
         nc.addObserver(self,
                        selector:#selector(self.appWillQuit),

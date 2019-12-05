@@ -11,7 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window:UIWindow?
     var myClocks:ImpList!
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         // Set universal window tint for views that delegate this property to this object
         window?.tintColor = UIColor.white
@@ -24,15 +24,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if FileManager.default.fileExists(atPath: docsPath) {
             // If imps file is present on the iDevice, load it in
-            let load = NSKeyedUnarchiver.unarchiveObject(withFile:docsPath)
-
-            if load != nil {
-                let clocks = load as! ImpList
-                myClocks.imps.removeAll()
-                let imps = clocks.imps as Array
-                myClocks.imps.append(contentsOf:imps)
-                myClocks.currentImp = clocks.currentImp
-                NSLog("Imp list loaded (%@)", docsPath);
+            // let load = NSKeyedUnarchiver.unarchiveObject(withFile:docsPath)
+            do {
+                if let url: URL = URL.init(string: docsPath) {
+                    let fileData = try Data.init(contentsOf:url)
+                    let load = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [ImpList.classForCoder()], from: fileData)
+                    
+                    if load != nil {
+                        let clocks = load as! ImpList
+                        myClocks.imps.removeAll()
+                        let imps = clocks.imps as Array
+                        myClocks.imps.append(contentsOf:imps)
+                        myClocks.currentImp = clocks.currentImp
+                        NSLog("Imp list loaded (%@)", docsPath);
+                    }
+                }
+            } catch {
+                
             }
         }
 
@@ -59,10 +67,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // The app is going into the background or closing, so save the list of imps
             let docsDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
             let docsPath = docsDir[0] + "/oclocks"
-            let success = NSKeyedArchiver.archiveRootObject(myClocks, toFile:docsPath)
-            if success {
+            //let success = NSKeyedArchiver.archiveRootObject(myClocks!, toFile:docsPath)
+            do {
+                let data = try NSKeyedArchiver.archivedData(withRootObject: myClocks!, requiringSecureCoding: true)
+                let fm = FileManager.default
+                let success = fm.createFile(atPath: docsPath, contents: data, attributes: nil)
+                if !success { NSLog("Imp list save failed") }
                 NSLog("Imp list saved (%@)", docsPath)
-            } else {
+            } catch {
                 NSLog("Imp list save failed")
             }
         } else {

@@ -18,13 +18,13 @@ class AlarmViewController: UIViewController, UIPickerViewDelegate {
         super.viewDidLoad()
 
         // Set up the Navigation Bar with a Cancel button
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem:UIBarButtonSystemItem.cancel,
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem:UIBarButtonItem.SystemItem.cancel,
                                                                  target: self,
                                                                  action: #selector(self.cancel))
         self.navigationItem.leftBarButtonItem!.tintColor = UIColor.white
 
         // Set up the Navigation Bar with a Save button
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:UIBarButtonSystemItem.save,
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:UIBarButtonItem.SystemItem.save,
                                                                  target: self,
                                                                  action: #selector(self.save))
         self.navigationItem.rightBarButtonItem!.tintColor = UIColor.white

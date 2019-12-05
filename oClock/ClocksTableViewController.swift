@@ -35,7 +35,7 @@ class ClocksTableViewController: UITableViewController {
 
         // Set up the Navigation Bar with a Reorder button
         orderButton = UIBarButtonItem.init(title:"Reorder",
-                                           style:UIBarButtonItemStyle.plain,
+                                           style:UIBarButtonItem.Style.plain,
                                            target:self,
                                            action:#selector(self.orderTouched))
         self.navigationItem.leftBarButtonItem = orderButton
@@ -50,7 +50,7 @@ class ClocksTableViewController: UITableViewController {
         // Watch for app returning to foreground with ImpDetailViewController active
         NotificationCenter.default.addObserver(self,
                                                selector:#selector(self.viewWillAppear),
-                                               name:NSNotification.Name.UIApplicationWillEnterForeground,
+                                               name:UIApplication.willEnterForegroundNotification,
                                                object:nil)
     }
 
@@ -154,8 +154,8 @@ class ClocksTableViewController: UITableViewController {
             let cell:UITableViewCell? = tableView.cellForRow(at:indexPath)
 
             if let nopCell = cell  {
-                if nopCell.accessoryType == UITableViewCellAccessoryType.none {
-                    nopCell.accessoryType = UITableViewCellAccessoryType.checkmark
+                if nopCell.accessoryType == UITableViewCell.AccessoryType.none {
+                    nopCell.accessoryType = UITableViewCell.AccessoryType.checkmark
                 }
             }
 
@@ -170,7 +170,7 @@ class ClocksTableViewController: UITableViewController {
             let cell:UITableViewCell? = tableView.cellForRow(at:oldIndexPath)
 
             if let nopCell = cell {
-                nopCell.accessoryType = UITableViewCellAccessoryType.none
+                nopCell.accessoryType = UITableViewCell.AccessoryType.none
             }
         }
 
@@ -178,7 +178,7 @@ class ClocksTableViewController: UITableViewController {
         let cell:UITableViewCell? = tableView.cellForRow(at:indexPath)
 
         if let nopCell = cell {
-            nopCell.accessoryType = UITableViewCellAccessoryType.checkmark
+            nopCell.accessoryType = UITableViewCell.AccessoryType.checkmark
             nopCell.accessoryView?.tintColor = UIColor.darkGray
         }
 
@@ -198,23 +198,23 @@ class ClocksTableViewController: UITableViewController {
             cell.textLabel?.text = "Add new cløck"
             cell.detailTextLabel?.text = ""
             cell.accessoryView?.tintColor = UIColor.darkGray
-            cell.accessoryType = UITableViewCellAccessoryType.none
-            cell.editingAccessoryType = UITableViewCellAccessoryType.none
+            cell.accessoryType = UITableViewCell.AccessoryType.none
+            cell.editingAccessoryType = UITableViewCell.AccessoryType.none
         } else {
             let clock = myClocks.imps[indexPath.row]
             cell.textLabel?.text = clock.name
-            cell.accessoryType = UITableViewCellAccessoryType.none
+            cell.accessoryType = UITableViewCell.AccessoryType.none
 
             if indexPath.row == myClocks.currentImp {
-                cell.accessoryType = UITableViewCellAccessoryType.checkmark
+                cell.accessoryType = UITableViewCell.AccessoryType.checkmark
             }
 
             if tableOrderingFlag {
                 cell.showsReorderControl = true
-                cell.editingAccessoryType = UITableViewCellAccessoryType.none
+                cell.editingAccessoryType = UITableViewCell.AccessoryType.none
             } else {
                 cell.showsReorderControl = false
-                cell.editingAccessoryType = UITableViewCellAccessoryType.detailDisclosureButton
+                cell.editingAccessoryType = UITableViewCell.AccessoryType.detailDisclosureButton
             }
 
             // Hide or Show ID according to setting
@@ -238,28 +238,28 @@ class ClocksTableViewController: UITableViewController {
         return true
     }
 
-    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) ->UITableViewCellEditingStyle {
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) ->UITableViewCell.EditingStyle {
 
         if !tableOrderingFlag {
             if indexPath.row == myClocks.imps.count {
-                return UITableViewCellEditingStyle.insert
+                return UITableViewCell.EditingStyle.insert
             } else {
-                return UITableViewCellEditingStyle.delete
+                return UITableViewCell.EditingStyle.delete
             }
         } else {
-            return UITableViewCellEditingStyle.none
+            return UITableViewCell.EditingStyle.none
         }
     }
 
 
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 
         if editingStyle == .delete {
             // Deselect and remove the accessory
             tableView.deselectRow(at:indexPath, animated:true)
             let oldIndexPath = NSIndexPath.init(row:currentClock, section:0) as IndexPath
             let cell = tableView.cellForRow(at:oldIndexPath)!
-            cell.accessoryType = UITableViewCellAccessoryType.none
+            cell.accessoryType = UITableViewCell.AccessoryType.none
 
             // Remove the deleted row's imp from the data source FIRST
             if indexPath.row == myClocks.currentImp {
@@ -278,7 +278,7 @@ class ClocksTableViewController: UITableViewController {
             if currentClock != -1 {
                 let oldIndexPath = NSIndexPath.init(row:currentClock, section:0) as IndexPath
                 let cell = tableView.cellForRow(at:oldIndexPath)!
-                cell.accessoryType = UITableViewCellAccessoryType.checkmark
+                cell.accessoryType = UITableViewCell.AccessoryType.checkmark
             }
             
             tableView.reloadData()
@@ -292,7 +292,7 @@ class ClocksTableViewController: UITableViewController {
             myClocks.imps.append(imp)
             
             // And add it to the table
-            tableView.insertRows(at:[indexPath], with:UITableViewRowAnimation.none)
+            tableView.insertRows(at:[indexPath], with:UITableView.RowAnimation.none)
             clockTable.reloadData()
         }    
     }
@@ -313,7 +313,7 @@ class ClocksTableViewController: UITableViewController {
 
         // Move selection if necessary
         if selectedImp != nil {
-            if let imp = imps.index(of:selectedImp!) {
+            if let imp = imps.firstIndex(of:selectedImp!) {
                 myClocks.currentImp = imp
                 currentClock = myClocks.currentImp
             }
@@ -333,10 +333,10 @@ class ClocksTableViewController: UITableViewController {
         // Instantiate the imp detail view controller as required - ie. every time
         if cdvc == nil {
             let storyboard = UIStoryboard.init(name:"Main", bundle:nil)
-            cdvc = storyboard.instantiateViewController(withIdentifier:"imp_clock_detail_view") as! ClockDetailViewController
+            cdvc = storyboard.instantiateViewController(withIdentifier:"imp_clock_detail_view") as? ClockDetailViewController
             cdvc.navigationItem.title = "Cløck Info"
             cdvc.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title:"Cløcks",
-                                                                         style:UIBarButtonItemStyle.plain,
+                                                                         style:UIBarButtonItem.Style.plain,
                                                                          target:cdvc,
                                                                          action:#selector(cdvc.changeDetails))
             cdvc.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
