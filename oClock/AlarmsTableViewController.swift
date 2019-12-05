@@ -34,7 +34,7 @@ class AlarmsTableViewController:
         self.navigationItem.leftBarButtonItem!.action = #selector(self.editTouched)
 
         // Set up the Navigation Bar with a New Alarm button
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:UIBarButtonSystemItem.add,
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:UIBarButtonItem.SystemItem.add,
                                                                  target: self,
                                                                  action: #selector(self.newTouched))
         self.navigationItem.rightBarButtonItem!.tintColor = UIColor.white
@@ -78,7 +78,7 @@ class AlarmsTableViewController:
         // Instantiate the alarm detail view controller as required
         if alvc == nil {
             let storyboard = UIStoryboard.init(name:"Main", bundle:nil)
-            alvc = storyboard.instantiateViewController(withIdentifier:"imp_alarm_view") as! AlarmViewController
+            alvc = storyboard.instantiateViewController(withIdentifier:"imp_alarm_view") as? AlarmViewController
             alvc.navigationItem.title = "New Alarm"
             alvc.navigationItem.leftBarButtonItem?.tintColor = UIColor.white
             alvc.alarms = alarms
